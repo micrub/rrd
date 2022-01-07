@@ -367,7 +367,7 @@ func parseRRDInfo(i *C.rrd_info_t) map[string]interface{} {
 			} else {
 				m = make(map[string]interface{})
 			}
-			old, _ := m[kkey]
+			old := m[kkey]
 			m[kkey] = updateInfoValue(w, old)
 			v = m
 		default:
