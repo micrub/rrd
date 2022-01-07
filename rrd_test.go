@@ -10,12 +10,12 @@ import (
 func TestAll(t *testing.T) {
 	// Create
 	const (
-		dbfile    = "/tmp/test.rrd"
+		dbFile    = "/tmp/test.rrd"
 		step      = 1
 		heartbeat = 2 * step
 	)
 
-	c := NewCreator(dbfile, time.Now(), step)
+	c := NewCreator(dbFile, time.Now(), step)
 	c.RRA("AVERAGE", 0.5, 1, 100)
 	c.RRA("AVERAGE", 0.5, 5, 100)
 	c.DS("cnt", "COUNTER", heartbeat, 0, 100)
@@ -26,7 +26,7 @@ func TestAll(t *testing.T) {
 	}
 
 	// Update
-	u := NewUpdater(dbfile)
+	u := NewUpdater(dbFile)
 	for i := 0; i < 10; i++ {
 		time.Sleep(step * time.Second)
 		err := u.Update(time.Now(), i, 1.5*float64(i))
@@ -46,7 +46,7 @@ func TestAll(t *testing.T) {
 	}
 
 	// Info
-	inf, err := Info(dbfile)
+	inf, err := Info(dbFile)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,8 +60,8 @@ func TestAll(t *testing.T) {
 	g.SetVLabel("some variable")
 	g.SetSize(800, 300)
 	g.SetWatermark("some watermark")
-	g.Def("v1", dbfile, "g", "AVERAGE")
-	g.Def("v2", dbfile, "cnt", "AVERAGE")
+	g.Def("v1", dbFile, "g", "AVERAGE")
+	g.Def("v2", dbFile, "cnt", "AVERAGE")
 	g.VDef("max1", "v1,MAXIMUM")
 	g.VDef("avg2", "v2,AVERAGE")
 	g.Line(1, "v1", "ff0000", "var 1")
@@ -95,7 +95,7 @@ func TestAll(t *testing.T) {
 	fmt.Printf("Start: %s\n", start)
 	fmt.Printf("End: %s\n", end)
 	fmt.Printf("Step: %s\n", step*time.Second)
-	fetchRes, err := Fetch(dbfile, "AVERAGE", start, end, step*time.Second)
+	fetchRes, err := Fetch(dbFile, "AVERAGE", start, end, step*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,8 +129,8 @@ func TestAll(t *testing.T) {
 	fmt.Printf("Step: %s\n", step*time.Second)
 
 	e := NewExporter()
-	e.Def("def1", dbfile, "cnt", "AVERAGE")
-	e.Def("def2", dbfile, "g", "AVERAGE")
+	e.Def("def1", dbFile, "cnt", "AVERAGE")
+	e.Def("def2", dbFile, "g", "AVERAGE")
 	e.CDef("vdef1", "def1,def2,+")
 	e.XportDef("def1", "cnt")
 	e.XportDef("def2", "g")
